@@ -1,4 +1,3 @@
-from .category import Category
-from .product import Product
+from .crm import Activity, Deal, Student
 
-__all__ = ["Category", "Product"]
+__all__ = ["Student", "Deal", "Activity"]
