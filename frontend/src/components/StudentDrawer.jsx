@@ -1,8 +1,16 @@
 import { useEffect, useState } from 'react'
-import { Activity, BarChart3, BookOpen, MessageCircle, Phone, Plus, Send, X } from 'lucide-react'
+import { Activity, BarChart3, BookOpen, MessageCircle, Phone, Plus, Save, Send, X } from 'lucide-react'
 import { api } from '../api'
-import { STAGES, formatDate, money } from '../constants'
+import { STAGES, formatDate } from '../constants'
 import { EmptyState } from './Common'
+
+function toDateTimeLocal(value) {
+  if (!value) return ''
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return ''
+  const pad = (part) => String(part).padStart(2, '0')
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`
+}
 
 export function StudentDrawer({ student, deals, onClose, onRefresh }) {
   const [activities, setActivities] = useState([])
@@ -10,6 +18,14 @@ export function StudentDrawer({ student, deals, onClose, onRefresh }) {
   const [kind, setKind] = useState('telegram')
   const [saving, setSaving] = useState(false)
   const [status, setStatus] = useState(student?.status || 'lead')
+  const [dealAmount, setDealAmount] = useState('')
+  const [nextContactAt, setNextContactAt] = useState('')
+  const [dealSaving, setDealSaving] = useState(false)
+  const [dealSaved, setDealSaved] = useState(false)
+  const [dealError, setDealError] = useState('')
+
+  const deal = deals.find((item) => item.student_id === student?.id)
+  const stage = STAGES.find((item) => item.key === deal?.stage)
 
   useEffect(() => {
     if (!student) return
@@ -17,9 +33,19 @@ export function StudentDrawer({ student, deals, onClose, onRefresh }) {
     api.activities(student.id).then(setActivities).catch(() => setActivities([]))
   }, [student])
 
+  useEffect(() => {
+    if (!deal) {
+      setDealAmount('')
+      setNextContactAt('')
+      return
+    }
+    setDealAmount(String(deal.amount ?? 0))
+    setNextContactAt(toDateTimeLocal(deal.next_contact_at))
+    setDealSaved(false)
+    setDealError('')
+  }, [deal?.id, deal?.amount, deal?.next_contact_at])
+
   if (!student) return null
-  const deal = deals.find((item) => item.student_id === student.id)
-  const stage = STAGES.find((item) => item.key === deal?.stage)
 
   const addActivity = async (event) => {
     event.preventDefault()
@@ -36,6 +62,26 @@ export function StudentDrawer({ student, deals, onClose, onRefresh }) {
     setStatus(nextStatus)
     await api.updateStudent(student.id, { status: nextStatus })
     onRefresh()
+  }
+
+  const saveDeal = async (event) => {
+    event.preventDefault()
+    if (!deal) return
+    setDealSaving(true)
+    setDealSaved(false)
+    setDealError('')
+    try {
+      await api.updateDeal(deal.id, {
+        amount: dealAmount === '' ? 0 : Number(dealAmount),
+        next_contact_at: nextContactAt || null,
+      })
+      await onRefresh()
+      setDealSaved(true)
+    } catch (error) {
+      setDealError(error.message)
+    } finally {
+      setDealSaving(false)
+    }
   }
 
   return (
@@ -62,7 +108,33 @@ export function StudentDrawer({ student, deals, onClose, onRefresh }) {
 
           <section className="detail-section deal-summary">
             <div className="detail-title">Сделка</div>
-            {deal ? <div className="deal-summary-grid"><div><span>Этап</span><strong>{stage?.label || deal.stage}</strong></div><div><span>Сумма</span><strong>{money(deal.amount)}</strong></div><div><span>Вероятность</span><strong>{deal.probability}%</strong></div><div><span>Следующий контакт</span><strong>{formatDate(deal.next_contact_at)}</strong></div></div> : <span className="muted">Сделка не создана</span>}
+            {deal ? (
+              <>
+                <div className="deal-summary-grid compact">
+                  <div><span>Этап</span><strong>{stage?.label || deal.stage}</strong></div>
+                  <div><span>Вероятность</span><strong>{deal.probability}%</strong></div>
+                </div>
+                <form className="deal-edit-form" onSubmit={saveDeal}>
+                  <label className="deal-edit-field">
+                    <span>Сумма, ₽</span>
+                    <input type="number" min="0" step="500" value={dealAmount} onChange={(event) => { setDealAmount(event.target.value); setDealSaved(false) }} />
+                  </label>
+                  <label className="deal-edit-field">
+                    <span>Следующее касание</span>
+                    <input type="datetime-local" value={nextContactAt} onChange={(event) => { setNextContactAt(event.target.value); setDealSaved(false) }} />
+                  </label>
+                  <div className="deal-edit-actions">
+                    <div className="deal-save-message">
+                      {dealError && <span className="deal-edit-error">{dealError}</span>}
+                      {dealSaved && !dealError && <span className="deal-edit-success">Сохранено</span>}
+                    </div>
+                    <button className="secondary-button deal-save-button" disabled={dealSaving}>
+                      <Save size={15} />{dealSaving ? 'Сохраняю…' : 'Сохранить сделку'}
+                    </button>
+                  </div>
+                </form>
+              </>
+            ) : <span className="muted">Сделка не создана</span>}
           </section>
 
           <section className="detail-section">
