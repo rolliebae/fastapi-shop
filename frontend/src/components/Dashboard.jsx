@@ -43,12 +43,15 @@ export function Dashboard({ data, students, deals, onStudent }) {
             <Target size={20} />
           </div>
           <div className="funnel-list">
-            {stageCounts.map((stage) => (
-              <div className="funnel-row" key={stage.key}>
-                <div className="funnel-meta"><span>{stage.label}</span><strong>{stage.count}</strong></div>
-                <div className="funnel-track"><div className="funnel-fill" style={{ width: `${Math.max(6, (stage.count / maxStage) * 100)}%` }} /></div>
-              </div>
-            ))}
+            {stageCounts.map((stage) => {
+              const width = stage.count === 0 ? 0 : Math.max(8, (stage.count / maxStage) * 100)
+              return (
+                <div className="funnel-row" key={stage.key}>
+                  <div className="funnel-meta"><span>{stage.label}</span><strong>{stage.count}</strong></div>
+                  <div className="funnel-track"><div className="funnel-fill" style={{ width: `${width}%` }} /></div>
+                </div>
+              )
+            })}
           </div>
         </section>
 

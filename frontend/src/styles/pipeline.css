@@ -34,7 +34,7 @@
 .student-name-cell > div:last-child { min-width: 0; }
 .student-name-cell strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .empty-state { min-height: 220px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; }
-.empty-state.compact { min-height: 130px; }
+.empty-state.compact { min-height: 108px; }
 .empty-icon { width: 42px; height: 42px; display: grid; place-items: center; margin-bottom: 12px; border-radius: 13px; color: #687069; background: #eef2ee; }
 .empty-state strong { font-size: 12px; }
 .empty-state span { max-width: 300px; margin-top: 6px; color: var(--muted); font-size: 10px; line-height: 1.5; }
