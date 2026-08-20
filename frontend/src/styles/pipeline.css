@@ -32,7 +32,9 @@
 .student-row > div > span:not(.status) { margin-top: 4px; color: #8a918b; font-size: 9px; }
 .student-name-cell { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .student-name-cell > div:last-child { min-width: 0; }
-.student-name-cell strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.student-name-cell strong, .student-name-cell span { display: block; }
+.student-name-cell strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; }
+.student-name-cell span { margin-top: 4px; overflow: hidden; color: #8a918b; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
 .empty-state { min-height: 220px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; }
 .empty-state.compact { min-height: 108px; }
 .empty-icon { width: 42px; height: 42px; display: grid; place-items: center; margin-bottom: 12px; border-radius: 13px; color: #687069; background: #eef2ee; }
