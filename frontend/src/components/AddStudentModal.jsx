@@ -3,7 +3,11 @@ import { api } from '../api'
 import { Field, Modal } from './Common'
 
 export function AddStudentModal({ open, onClose, onCreated }) {
-  const initial = { full_name: '', phone: '', telegram: '', parent_name: '', parent_phone: '', grade: '', exam: 'ОГЭ', subject: 'Математика', status: 'lead', source: 'Telegram', owner: 'Егор', notes: '' }
+  const initial = {
+    full_name: '', phone: '', telegram: '', parent_name: '', parent_phone: '', grade: '',
+    exam: 'ОГЭ', subject: 'Математика', status: 'lead', source: 'Telegram', owner: 'Егор', notes: '',
+    deal_amount: '', next_contact_at: '',
+  }
   const [form, setForm] = useState(initial)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -15,10 +19,18 @@ export function AddStudentModal({ open, onClose, onCreated }) {
     event.preventDefault()
     setSaving(true); setError('')
     try {
-      const payload = { ...form, grade: form.grade ? Number(form.grade) : null }
+      const { deal_amount, next_contact_at, ...studentForm } = form
+      const payload = { ...studentForm, grade: studentForm.grade ? Number(studentForm.grade) : null }
       Object.keys(payload).forEach((key) => { if (payload[key] === '') payload[key] = null })
       const student = await api.createStudent(payload)
-      await api.createDeal({ student_id: student.id, stage: 'new', product: `${student.exam || 'ОГЭ'} ${student.subject || 'Математика'}`, amount: 0, probability: 10 })
+      await api.createDeal({
+        student_id: student.id,
+        stage: 'new',
+        product: `${student.exam || 'ОГЭ'} ${student.subject || 'Математика'}`,
+        amount: deal_amount ? Number(deal_amount) : 0,
+        probability: 10,
+        next_contact_at: next_contact_at || null,
+      })
       onCreated(student)
       onClose()
     } catch (err) { setError(err.message) } finally { setSaving(false) }
@@ -36,6 +48,8 @@ export function AddStudentModal({ open, onClose, onCreated }) {
           <Field label="Предмет"><select value={form.subject} onChange={set('subject')}><option>Математика</option><option>Информатика</option></select></Field>
           <Field label="Источник"><select value={form.source} onChange={set('source')}><option>Telegram</option><option>Рекомендация</option><option>Диагностика</option><option>VK</option><option>Другое</option></select></Field>
           <Field label="Ответственный"><input value={form.owner} onChange={set('owner')} placeholder="Егор" /></Field>
+          <Field label="Стоимость, ₽"><input type="number" min="0" step="500" value={form.deal_amount} onChange={set('deal_amount')} placeholder="6000" /></Field>
+          <Field label="Следующее касание"><input type="datetime-local" value={form.next_contact_at} onChange={set('next_contact_at')} /></Field>
           <Field label="Имя родителя"><input value={form.parent_name} onChange={set('parent_name')} placeholder="Елена" /></Field>
           <Field label="Телефон родителя"><input value={form.parent_phone} onChange={set('parent_phone')} placeholder="+7 999 000-00-00" /></Field>
         </div>
