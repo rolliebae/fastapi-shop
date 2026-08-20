@@ -1,13 +1,13 @@
-.kanban-wrap { width: 100%; overflow-x: auto; padding-bottom: 12px; }
-.kanban { min-width: 1320px; display: grid; grid-template-columns: repeat(6, 210px); gap: 12px; }
-.kanban-column { min-height: calc(100vh - 160px); border-radius: 16px; background: #eef1ee; }
+.kanban-wrap { width: 100%; overflow-x: auto; padding-bottom: 8px; scrollbar-gutter: stable; }
+.kanban { min-width: 1166px; display: grid; grid-template-columns: repeat(6, minmax(186px, 1fr)); gap: 10px; }
+.kanban-column { min-height: clamp(440px, calc(100vh - 300px), 580px); border-radius: 16px; background: #eef1ee; }
 .kanban-header { min-height: 64px; display: flex; flex-direction: column; justify-content: center; padding: 11px 13px; }
 .kanban-header > div { display: flex; align-items: center; gap: 7px; color: #343a35; font-size: 11px; font-weight: 750; }
 .kanban-header b { margin-left: auto; color: #818982; font-size: 10px; }
 .kanban-header > strong { margin-top: 7px; color: #7a827c; font-size: 10px; font-weight: 650; }
 .stage-dot { width: 7px; height: 7px; border-radius: 50%; background: #adb4ae; }
 .stage-new { background: #aab2ac; }.stage-diagnostic { background: var(--blue); }.stage-offer { background: #f2c65c; }.stage-payment { background: var(--mint); }.stage-won { background: var(--green); }.stage-lost { background: #e88585; }
-.kanban-cards { min-height: 160px; display: grid; align-content: start; gap: 9px; padding: 0 8px 12px; }
+.kanban-cards { min-height: 140px; display: grid; align-content: start; gap: 9px; padding: 0 8px 12px; }
 .deal-card { padding: 13px; border: 1px solid #e0e5e0; border-radius: 14px; background: white; box-shadow: 0 3px 9px rgba(18,25,19,.03); cursor: grab; }
 .deal-card:active { cursor: grabbing; }
 .deal-card:hover { border-color: #ccd4cd; box-shadow: 0 8px 18px rgba(18,25,19,.06); }
@@ -20,7 +20,7 @@
 .deal-card-bottom strong { font-size: 12px; }
 .deal-card-bottom span { color: #758075; font-size: 10px; }
 .deal-next { display: flex; align-items: center; gap: 5px; margin-top: 10px; padding-top: 9px; border-top: 1px solid #eef1ee; color: #7a837b; font-size: 9px; }
-.kanban-empty { min-height: 70px; display: grid; place-items: center; padding: 14px; border: 1px dashed #d7dcd8; border-radius: 12px; color: #9ca39d; font-size: 9px; text-align: center; }
+.kanban-empty { min-height: 64px; display: grid; place-items: center; padding: 12px; border: 1px dashed #d7dcd8; border-radius: 12px; color: #9ca39d; font-size: 9px; text-align: center; }
 .table-panel { overflow: hidden; }
 .table-header-row { min-height: 42px; display: grid; grid-template-columns: 1.35fr 1fr 1.2fr .75fr .7fr .85fr 24px; align-items: center; gap: 12px; padding: 0 16px; border-bottom: 1px solid var(--border); color: #8a928b; background: #f8faf8; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .6px; }
 .students-table { padding: 0 7px 7px; }
