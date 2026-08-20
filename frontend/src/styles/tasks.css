@@ -1,0 +1,60 @@
+.tasks-page { display: grid; gap: 16px; }
+.task-summary { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); overflow: hidden; border: 1px solid var(--border); border-radius: 16px; background: #fff; }
+.task-summary-item { min-height: 82px; display: flex; align-items: center; gap: 11px; padding: 14px 16px; border: 0; border-right: 1px solid #edf0ed; color: #59615a; background: transparent; text-align: left; }
+.task-summary-item:last-child { border-right: 0; }
+.task-summary-item:hover, .task-summary-item.active { background: #f7f9f7; }
+.task-summary-item > svg { flex: 0 0 auto; }
+.task-summary-item strong, .task-summary-item span { display: block; }
+.task-summary-item strong { color: #171a18; font-size: 21px; letter-spacing: -.5px; }
+.task-summary-item span { margin-top: 3px; color: #7b837c; font-size: 10px; font-weight: 700; }
+.summary-danger > svg { color: #c44d4d; }.summary-today > svg { color: #a17614; }.summary-tomorrow > svg { color: #4b7fb9; }.summary-none > svg { color: #7a837c; }
+.tasks-panel { overflow: hidden; }
+.tasks-toolbar { min-height: 68px; display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 14px 16px; border-bottom: 1px solid #edf0ed; }
+.tasks-toolbar h2 { margin: 0; font-size: 14px; }
+.tasks-toolbar p { margin: 4px 0 0; color: var(--muted); font-size: 10px; }
+.task-filter-chips { display: flex; align-items: center; gap: 5px; overflow-x: auto; }
+.task-filter { min-height: 31px; flex: 0 0 auto; padding: 0 9px; border: 1px solid transparent; border-radius: 9px; color: #707871; background: transparent; font-size: 9px; font-weight: 750; }
+.task-filter:hover { background: #f5f7f5; }
+.task-filter.active { border-color: #cce78a; color: #35401c; background: #eff9d1; }
+.task-list { padding: 5px 8px 8px; }
+.task-row { min-height: 74px; display: grid; grid-template-columns: minmax(250px,1fr) 170px auto; align-items: center; gap: 14px; padding: 9px 10px; border-bottom: 1px solid #eef1ee; }
+.task-row:last-child { border-bottom: 0; }
+.task-row:hover { border-radius: 12px; background: #fafbfa; }
+.task-row.task-overdue { box-shadow: inset 3px 0 #e88585; }
+.task-student { min-width: 0; display: flex; align-items: center; gap: 10px; padding: 0; border: 0; background: transparent; text-align: left; }
+.task-main { min-width: 0; }
+.task-main strong, .task-main span { display: block; }
+.task-main strong { overflow: hidden; color: #252a26; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+.task-main span { margin-top: 4px; overflow: hidden; color: #858d86; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+.task-due { display: grid; justify-items: start; gap: 5px; }
+.task-due small { color: #727a73; font-size: 9px; white-space: nowrap; }
+.task-actions { display: flex; align-items: center; justify-content: flex-end; gap: 7px; }
+.task-action { min-height: 34px; padding: 0 10px; border-radius: 9px; font-size: 9px; }
+.due-badge { width: fit-content; min-height: 23px; display: inline-flex; align-items: center; padding: 0 8px; border-radius: 999px; font-size: 9px; font-weight: 800; white-space: nowrap; }
+.due-badge.due-overdue { color: #933737; background: #ffe5e5; }
+.due-badge.due-today { color: #725714; background: #fff1bd; }
+.due-badge.due-tomorrow { color: #315d89; background: #e2f0ff; }
+.due-badge.due-later { color: #5f6861; background: #edf1ed; }
+.due-badge.due-none { color: #6e756f; background: #f0f2f0; }
+.deal-next.due-line.due-overdue { color: #b34747; }
+.deal-next.due-line.due-today { color: #8b6714; }
+.deal-next.due-line.due-tomorrow { color: #426f9d; }
+.deal-next.due-line.due-later { color: #737c74; }
+.deal-next.due-line.due-none { color: #969d97; }
+
+@media (max-width: 900px) {
+  .task-summary { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .task-summary-item:nth-child(2) { border-right: 0; }
+  .task-summary-item:nth-child(-n+2) { border-bottom: 1px solid #edf0ed; }
+  .task-row { grid-template-columns: minmax(0,1fr) auto; gap: 8px 12px; }
+  .task-due { grid-column: 1; padding-left: 46px; }
+  .task-actions { grid-column: 2; grid-row: 1 / span 2; flex-direction: column; align-items: stretch; }
+}
+
+@media (max-width: 640px) {
+  .tasks-toolbar { align-items: stretch; flex-direction: column; }
+  .task-row { grid-template-columns: 1fr; padding: 12px 10px; }
+  .task-due { grid-column: auto; padding-left: 46px; }
+  .task-actions { grid-column: auto; grid-row: auto; padding-left: 46px; flex-direction: row; justify-content: flex-start; }
+  .task-action { flex: 1; }
+}

@@ -1,3 +1,13 @@
+.pipeline-page { display: grid; gap: 12px; }
+.pipeline-toolbar { min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 7px 8px 7px 11px; border: 1px solid var(--border); border-radius: 14px; background: #fff; }
+.pipeline-filter-group { min-width: 0; display: flex; align-items: center; gap: 6px; overflow-x: auto; }
+.pipeline-filter-group > svg { flex: 0 0 auto; margin-right: 2px; color: #7a827b; }
+.pipeline-filter { min-height: 31px; flex: 0 0 auto; padding: 0 9px; border: 1px solid transparent; border-radius: 9px; color: #69716a; background: transparent; font-size: 9px; font-weight: 750; }
+.pipeline-filter:hover { background: #f4f7f4; }
+.pipeline-filter.active { border-color: #cce78a; color: #35401c; background: #eff9d1; }
+.pipeline-owner-filter { flex: 0 0 auto; display: flex; align-items: center; gap: 7px; }
+.pipeline-owner-filter span { color: #7d857e; font-size: 9px; font-weight: 750; }
+.pipeline-owner-filter select { height: 32px; min-width: 118px; padding: 0 28px 0 9px; border: 1px solid var(--border); border-radius: 9px; outline: 0; color: #414842; background: #fff; font-size: 10px; }
 .kanban-wrap { width: 100%; overflow-x: auto; padding-bottom: 8px; scrollbar-gutter: stable; }
 .kanban { min-width: 1166px; display: grid; grid-template-columns: repeat(6, minmax(186px, 1fr)); gap: 10px; }
 .kanban-column { min-height: clamp(440px, calc(100vh - 300px), 580px); border-radius: 16px; background: #eef1ee; }
@@ -46,3 +56,9 @@
 .modal-header { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; justify-content: space-between; padding: 20px 22px 14px; border-bottom: 1px solid #eef1ee; background: white; }
 .modal-header h2 { margin: 0; font-size: 18px; letter-spacing: -.5px; }
 .icon-button { width: 36px; height: 36px; border: 1px solid var(--border); border-radius: 10px; display: inline-grid; place-items: center; color: #4c534d; background: white; }
+
+@media (max-width: 760px) {
+  .pipeline-toolbar { align-items: stretch; flex-direction: column; }
+  .pipeline-owner-filter { justify-content: space-between; }
+  .pipeline-owner-filter select { flex: 1; }
+}

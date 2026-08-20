@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { ArrowRight, CalendarClock, Check, ChevronRight, CircleDollarSign, GraduationCap, Target, UsersRound } from 'lucide-react'
 import { STAGES, formatDate, money } from '../constants'
+import { followupSortValue, getFollowupBucket, getFollowupMeta, isOpenDeal } from '../followups'
 import { EmptyState, StatusBadge } from './Common'
 
 function MetricCard({ icon: Icon, label, value, helper, accent = false }) {
@@ -14,12 +15,16 @@ function MetricCard({ icon: Icon, label, value, helper, accent = false }) {
   )
 }
 
-export function Dashboard({ data, students, deals, onStudent }) {
-  const upcoming = useMemo(() => deals
-    .filter((deal) => deal.next_contact_at && !['won', 'lost'].includes(deal.stage))
-    .sort((a, b) => new Date(a.next_contact_at) - new Date(b.next_contact_at))
-    .slice(0, 5), [deals])
+export function Dashboard({ data, students, deals, onStudent, onTasks }) {
+  const openDeals = useMemo(() => deals.filter(isOpenDeal), [deals])
+  const upcoming = useMemo(() => openDeals
+    .filter((deal) => deal.next_contact_at)
+    .sort((a, b) => followupSortValue(a) - followupSortValue(b))
+    .slice(0, 5), [openDeals])
 
+  const overdueCount = openDeals.filter((deal) => getFollowupBucket(deal.next_contact_at) === 'overdue').length
+  const todayCount = openDeals.filter((deal) => getFollowupBucket(deal.next_contact_at) === 'today').length
+  const withoutDateCount = openDeals.filter((deal) => getFollowupBucket(deal.next_contact_at) === 'none').length
   const studentMap = useMemo(() => Object.fromEntries(students.map((student) => [student.id, student])), [students])
   const stageCounts = STAGES.filter((stage) => !['won', 'lost'].includes(stage.key)).map((stage) => ({
     ...stage,
@@ -57,19 +62,20 @@ export function Dashboard({ data, students, deals, onStudent }) {
 
         <section className="panel followups-panel">
           <div className="panel-header">
-            <div><h2>Ближайшие касания</h2><p>Кому нельзя забыть написать</p></div>
-            <CalendarClock size={20} />
+            <div><h2>Работа на сегодня</h2><p>{overdueCount > 0 ? `Просрочено ${overdueCount} · сегодня ${todayCount}` : todayCount > 0 ? `Сегодня ${todayCount} касаний` : 'Критичных касаний на сегодня нет'}</p></div>
+            <button className="panel-link" onClick={onTasks}>Все задачи</button>
           </div>
           <div className="followups-list">
             {upcoming.length === 0 ? (
-              <EmptyState compact icon={Check} title="Касаний пока нет" text="Добавьте дату следующего контакта в сделке." />
+              <EmptyState compact icon={Check} title="Касания под контролем" text={withoutDateCount > 0 ? `${withoutDateCount} сделок пока без даты — назначьте их в задачах.` : 'Новых касаний пока нет.'} />
             ) : upcoming.map((deal) => {
               const student = studentMap[deal.student_id]
+              const due = getFollowupMeta(deal.next_contact_at)
               return (
                 <button className="followup-row" key={deal.id} onClick={() => student && onStudent(student)}>
                   <div className="contact-avatar">{student?.full_name?.[0] || '?'}</div>
                   <div className="followup-main"><strong>{student?.full_name || `Ученик #${deal.student_id}`}</strong><span>{deal.product}</span></div>
-                  <div className="followup-date">{formatDate(deal.next_contact_at)}</div>
+                  <div className="followup-when"><span className={`due-badge due-${due.key}`}>{due.label}</span><small>{formatDate(deal.next_contact_at)}</small></div>
                   <ChevronRight size={17} />
                 </button>
               )

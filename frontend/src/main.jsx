@@ -5,6 +5,7 @@ import './styles/base.css'
 import './styles/dashboard.css'
 import './styles/pipeline.css'
 import './styles/details.css'
+import './styles/tasks.css'
 import './styles/responsive.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(

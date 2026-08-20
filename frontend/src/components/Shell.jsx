@@ -1,7 +1,8 @@
-import { LayoutDashboard, Menu, Plus, Search, Sparkles, Target, UsersRound, X } from 'lucide-react'
+import { LayoutDashboard, ListTodo, Menu, Plus, Search, Sparkles, Target, UsersRound, X } from 'lucide-react'
 
 const NAV = [
   { key: 'dashboard', label: 'Обзор', icon: LayoutDashboard },
+  { key: 'tasks', label: 'Задачи', icon: ListTodo },
   { key: 'pipeline', label: 'Воронка', icon: Target },
   { key: 'students', label: 'Ученики', icon: UsersRound },
 ]
@@ -18,7 +19,7 @@ function Logo() {
   )
 }
 
-export function Sidebar({ active, onChange, mobileOpen, onClose }) {
+export function Sidebar({ active, onChange, mobileOpen, onClose, taskCount = 0, overdueCount = 0 }) {
   return (
     <>
       {mobileOpen && <button className="mobile-backdrop" aria-label="Закрыть меню" onClick={onClose} />}
@@ -32,14 +33,15 @@ export function Sidebar({ active, onChange, mobileOpen, onClose }) {
             <button key={key} className={`nav-item ${active === key ? 'active' : ''}`} onClick={() => { onChange(key); onClose(); }}>
               <Icon size={18} />
               <span>{label}</span>
+              {key === 'tasks' && taskCount > 0 && <span className={`nav-badge ${overdueCount > 0 ? 'danger' : ''}`}>{taskCount}</span>}
             </button>
           ))}
         </nav>
         <div className="sidebar-note">
           <Sparkles size={17} />
           <div>
-            <strong>Фокус недели</strong>
-            <span>Довести лиды после диагностики до оплаты.</span>
+            <strong>Фокус дня</strong>
+            <span>{overdueCount > 0 ? `Просрочено ${overdueCount}. Всего в фокусе ${taskCount}.` : taskCount > 0 ? `На сегодня осталось ${taskCount} касаний.` : 'Касания на сегодня разобраны.'}</span>
           </div>
         </div>
         <div className="profile-row">

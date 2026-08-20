@@ -6,6 +6,8 @@ import { Pipeline } from './components/Pipeline'
 import { NAV, Sidebar, Topbar } from './components/Shell'
 import { StudentDrawer } from './components/StudentDrawer'
 import { Students } from './components/Students'
+import { Tasks } from './components/Tasks'
+import { getFollowupBucket, isOpenDeal, tomorrowAtSameTime } from './followups'
 
 const DEFAULT_SECTION = 'dashboard'
 
@@ -25,6 +27,8 @@ export default function App() {
   const [addOpen, setAddOpen] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [taskBusyId, setTaskBusyId] = useState(null)
+  const [nowTick, setNowTick] = useState(() => Date.now())
 
   const load = async () => {
     setError('')
@@ -35,6 +39,11 @@ export default function App() {
   }
 
   useEffect(() => { load() }, [])
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setNowTick(Date.now()), 60_000)
+    return () => window.clearInterval(timer)
+  }, [])
 
   useEffect(() => {
     const syncSectionFromUrl = () => setActive(sectionFromHash())
@@ -55,6 +64,22 @@ export default function App() {
     return students.filter((student) => [student.full_name, student.phone, student.telegram, student.parent_name, student.source, student.owner].filter(Boolean).some((value) => value.toLowerCase().includes(q)))
   }, [students, search])
 
+  const filteredDeals = useMemo(() => {
+    if (!search.trim()) return deals
+    const ids = new Set(filteredStudents.map((student) => student.id))
+    return deals.filter((deal) => ids.has(deal.student_id))
+  }, [deals, filteredStudents, search])
+
+  const taskStats = useMemo(() => {
+    const now = new Date(nowTick)
+    return deals.filter(isOpenDeal).reduce((result, deal) => {
+      const bucket = getFollowupBucket(deal.next_contact_at, now)
+      if (bucket === 'overdue') result.overdue += 1
+      if (bucket === 'today') result.today += 1
+      return result
+    }, { overdue: 0, today: 0 })
+  }, [deals, nowTick])
+
   const moveDeal = async (deal, stage) => {
     const previous = deals
     setDeals((current) => current.map((item) => item.id === deal.id ? { ...item, stage: stage.key, probability: stage.probability } : item))
@@ -70,24 +95,53 @@ export default function App() {
     } catch (err) { setDeals(previous); setError(err.message) }
   }
 
+  const completeFollowup = async (deal) => {
+    setTaskBusyId(deal.id)
+    setError('')
+    try {
+      await api.createActivity({ student_id: deal.student_id, kind: 'note', text: 'Касание выполнено', created_by: 'Егор' })
+      await api.updateDeal(deal.id, { next_contact_at: null })
+      await load()
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setTaskBusyId(null)
+    }
+  }
+
+  const rescheduleFollowup = async (deal) => {
+    setTaskBusyId(deal.id)
+    setError('')
+    try {
+      await api.updateDeal(deal.id, { next_contact_at: tomorrowAtSameTime(deal.next_contact_at) })
+      await load()
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setTaskBusyId(null)
+    }
+  }
+
   const handleStudentUpdated = async (updatedStudent) => {
     setSelectedStudent(updatedStudent)
     await load()
   }
 
   const title = NAV.find((item) => item.key === active)?.label || 'CRM'
+  const focusTaskCount = taskStats.overdue + taskStats.today
 
   return (
     <div className="app-shell">
-      <Sidebar active={active} onChange={navigate} mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
+      <Sidebar active={active} onChange={navigate} mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} taskCount={focusTaskCount} overdueCount={taskStats.overdue} />
       <main className="main-area">
         <Topbar title={title} search={search} onSearch={setSearch} onAdd={() => setAddOpen(true)} onMenu={() => setMobileOpen(true)} />
         <div className="content-area">
           {error && <div className="error-banner"><span>{error}</span><button onClick={load}>Повторить</button></div>}
           {loading ? <div className="loading-state"><div className="loader" /><span>Загружаю CRM…</span></div> : (
             <>
-              {active === 'dashboard' && <Dashboard data={dashboard} students={filteredStudents} deals={deals} onStudent={setSelectedStudent} />}
-              {active === 'pipeline' && <Pipeline students={filteredStudents} deals={deals} onMove={moveDeal} onStudent={setSelectedStudent} />}
+              {active === 'dashboard' && <Dashboard data={dashboard} students={filteredStudents} deals={filteredDeals} onStudent={setSelectedStudent} onTasks={() => navigate('tasks')} />}
+              {active === 'tasks' && <Tasks students={filteredStudents} deals={filteredDeals} onStudent={setSelectedStudent} onComplete={completeFollowup} onReschedule={rescheduleFollowup} busyId={taskBusyId} />}
+              {active === 'pipeline' && <Pipeline students={filteredStudents} deals={filteredDeals} onMove={moveDeal} onStudent={setSelectedStudent} />}
               {active === 'students' && <Students students={filteredStudents} onStudent={setSelectedStudent} />}
             </>
           )}

@@ -36,6 +36,9 @@ button { cursor: pointer; }
 .nav-item { width: 100%; border: 0; border-radius: 12px; display: flex; align-items: center; gap: 11px; padding: 12px 13px; color: #9ca49e; background: transparent; font-size: 14px; font-weight: 650; text-align: left; transition: .16s ease; }
 .nav-item:hover { color: white; background: #1a1e1b; }
 .nav-item.active { color: #101311; background: var(--accent); }
+.nav-badge { min-width: 23px; height: 23px; margin-left: auto; display: inline-grid; place-items: center; padding: 0 6px; border-radius: 999px; color: #202620; background: #e9f9bd; font-size: 10px; font-weight: 850; }
+.nav-badge.danger { color: #7f2525; background: #ffe1e1; }
+.nav-item.active .nav-badge { color: white; background: #202620; }
 .sidebar-note { margin-top: auto; display: flex; gap: 10px; padding: 14px; border: 1px solid #2c322d; border-radius: 15px; background: #171b18; }
 .sidebar-note svg { flex: 0 0 auto; margin-top: 2px; color: var(--accent); }
 .sidebar-note strong { display: block; font-size: 12px; }
