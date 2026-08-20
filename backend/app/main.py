@@ -8,9 +8,19 @@ from sqlalchemy.orm import Session
 from .config import settings
 from .database import get_db, init_db
 from .models import Activity, Deal, Student
-from .schemas import ActivityCreate, ActivityOut, DashboardOut, DealCreate, DealOut, StudentCreate, StudentOut, StudentUpdate
+from .schemas import (
+    ActivityCreate,
+    ActivityOut,
+    DashboardOut,
+    DealCreate,
+    DealOut,
+    DealUpdate,
+    StudentCreate,
+    StudentOut,
+    StudentUpdate,
+)
 
-app = FastAPI(title=settings.app_name, version="0.1.0")
+app = FastAPI(title=settings.app_name, version="0.2.0")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
@@ -101,6 +111,18 @@ def list_deals(stage: str | None = None, db: Session = Depends(get_db)):
     if stage:
         stmt = stmt.where(Deal.stage == stage)
     return db.scalars(stmt).all()
+
+
+@app.patch("/deals/{deal_id}", response_model=DealOut)
+def update_deal(deal_id: int, payload: DealUpdate, db: Session = Depends(get_db)):
+    deal = db.get(Deal, deal_id)
+    if not deal:
+        raise HTTPException(status_code=404, detail="Deal not found")
+    for key, value in payload.model_dump(exclude_unset=True).items():
+        setattr(deal, key, value)
+    db.commit()
+    db.refresh(deal)
+    return deal
 
 
 @app.post("/activities", response_model=ActivityOut, status_code=201)

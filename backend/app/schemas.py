@@ -54,6 +54,15 @@ class DealCreate(BaseModel):
     lost_reason: str | None = None
 
 
+class DealUpdate(BaseModel):
+    stage: str | None = None
+    product: str | None = None
+    amount: float | None = None
+    probability: int | None = Field(default=None, ge=0, le=100)
+    next_contact_at: datetime | None = None
+    lost_reason: str | None = None
+
+
 class DealOut(DealCreate):
     id: int
     created_at: datetime

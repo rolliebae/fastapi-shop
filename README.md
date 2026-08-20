@@ -1,16 +1,18 @@
 # Melschool CRM
 
-FastAPI CRM backend for Melschool, repurposed from the original shop prototype.
+Рабочий CRM MVP для Мелскула: FastAPI backend + React/Vite интерфейс для лидов, учеников, сделок и истории коммуникаций.
 
-## CRM MVP
+## Что есть в интерфейсе
 
-- students/leads with parent contacts, grade, exam, subject, source and owner;
-- sales deals with pipeline stage, amount, probability and next contact date;
-- activity timeline for calls, Telegram messages, diagnostics, lessons and notes;
-- dashboard metrics for leads, active students, won deals and weighted pipeline;
-- SQLite by default, configurable with `DATABASE_URL`.
+- обзор с ключевыми CRM-метриками и ближайшими касаниями;
+- kanban-воронка с drag-and-drop между этапами;
+- таблица учеников с поиском;
+- карточка ученика в боковой панели: контакты, статус, сделка, заметки и история взаимодействий;
+- создание нового ученика и первой сделки из интерфейса;
+- добавление звонков, Telegram-касаний, диагностик, занятий и заметок;
+- responsive layout для ноутбука, планшета и телефона.
 
-## Run
+## Backend
 
 ```bash
 cd backend
@@ -20,9 +22,24 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-Open `http://127.0.0.1:8000/docs` for Swagger UI.
+API: `http://127.0.0.1:8000`  
+Swagger: `http://127.0.0.1:8000/docs`
 
-## Main endpoints
+## Frontend
+
+В новом терминале:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Интерфейс: `http://127.0.0.1:5173`
+
+Vite проксирует запросы `/api/*` на FastAPI `http://127.0.0.1:8000`. Для отдельного backend URL можно задать `VITE_API_BASE_URL`.
+
+## Основные API endpoints
 
 - `GET /health`
 - `POST /students`
@@ -31,12 +48,13 @@ Open `http://127.0.0.1:8000/docs` for Swagger UI.
 - `PATCH /students/{id}`
 - `POST /deals`
 - `GET /deals`
+- `PATCH /deals/{id}`
 - `POST /activities`
 - `GET /students/{id}/activities`
 - `GET /dashboard`
 
-## Suggested CRM statuses
+## Статусы интерфейса
 
-Student status: `lead`, `diagnostic`, `trial`, `active`, `paused`, `finished`, `lost`.
+Student status: `lead`, `active`, `paused`, `archived`.
 
-Deal stage: `new`, `contacted`, `diagnostic_booked`, `diagnostic_done`, `offer`, `payment_pending`, `won`, `lost`.
+Deal stage: `new`, `diagnostic`, `offer`, `payment`, `won`, `lost`.

@@ -1,0 +1,46 @@
+.kanban-wrap { width: 100%; overflow-x: auto; padding-bottom: 12px; }
+.kanban { min-width: 1320px; display: grid; grid-template-columns: repeat(6, 210px); gap: 12px; }
+.kanban-column { min-height: calc(100vh - 160px); border-radius: 16px; background: #eef1ee; }
+.kanban-header { min-height: 64px; display: flex; flex-direction: column; justify-content: center; padding: 11px 13px; }
+.kanban-header > div { display: flex; align-items: center; gap: 7px; color: #343a35; font-size: 11px; font-weight: 750; }
+.kanban-header b { margin-left: auto; color: #818982; font-size: 10px; }
+.kanban-header > strong { margin-top: 7px; color: #7a827c; font-size: 10px; font-weight: 650; }
+.stage-dot { width: 7px; height: 7px; border-radius: 50%; background: #adb4ae; }
+.stage-new { background: #aab2ac; }.stage-diagnostic { background: var(--blue); }.stage-offer { background: #f2c65c; }.stage-payment { background: var(--mint); }.stage-won { background: var(--green); }.stage-lost { background: #e88585; }
+.kanban-cards { min-height: 160px; display: grid; align-content: start; gap: 9px; padding: 0 8px 12px; }
+.deal-card { padding: 13px; border: 1px solid #e0e5e0; border-radius: 14px; background: white; box-shadow: 0 3px 9px rgba(18,25,19,.03); cursor: grab; }
+.deal-card:active { cursor: grabbing; }
+.deal-card:hover { border-color: #ccd4cd; box-shadow: 0 8px 18px rgba(18,25,19,.06); }
+.deal-card-top { display: flex; align-items: center; gap: 9px; }
+.deal-card-top strong, .deal-card-top span { display: block; }
+.deal-card-top strong { max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; }
+.deal-card-top span { margin-top: 3px; color: #899089; font-size: 9px; }
+.deal-product { display: flex; align-items: center; gap: 6px; margin-top: 14px; color: #5e665f; font-size: 10px; }
+.deal-card-bottom { display: flex; align-items: center; justify-content: space-between; margin-top: 13px; }
+.deal-card-bottom strong { font-size: 12px; }
+.deal-card-bottom span { color: #758075; font-size: 10px; }
+.deal-next { display: flex; align-items: center; gap: 5px; margin-top: 10px; padding-top: 9px; border-top: 1px solid #eef1ee; color: #7a837b; font-size: 9px; }
+.kanban-empty { min-height: 70px; display: grid; place-items: center; padding: 14px; border: 1px dashed #d7dcd8; border-radius: 12px; color: #9ca39d; font-size: 9px; text-align: center; }
+.table-panel { overflow: hidden; }
+.table-header-row { min-height: 42px; display: grid; grid-template-columns: 1.35fr 1fr 1.2fr .75fr .7fr .85fr 24px; align-items: center; gap: 12px; padding: 0 16px; border-bottom: 1px solid var(--border); color: #8a928b; background: #f8faf8; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .6px; }
+.students-table { padding: 0 7px 7px; }
+.student-row { width: 100%; min-height: 67px; display: grid; grid-template-columns: 1.35fr 1fr 1.2fr .75fr .7fr .85fr 24px; align-items: center; gap: 12px; padding: 8px 9px; border: 0; border-bottom: 1px solid #eef1ee; background: transparent; text-align: left; }
+.student-row:last-child { border-bottom: 0; }
+.student-row:hover { border-radius: 12px; background: #f7f9f7; }
+.student-row > div > strong, .student-row > div > span:not(.status) { display: block; }
+.student-row > div > strong { font-size: 11px; }
+.student-row > div > span:not(.status) { margin-top: 4px; color: #8a918b; font-size: 9px; }
+.student-name-cell { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.student-name-cell > div:last-child { min-width: 0; }
+.student-name-cell strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.empty-state { min-height: 220px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; }
+.empty-state.compact { min-height: 130px; }
+.empty-icon { width: 42px; height: 42px; display: grid; place-items: center; margin-bottom: 12px; border-radius: 13px; color: #687069; background: #eef2ee; }
+.empty-state strong { font-size: 12px; }
+.empty-state span { max-width: 300px; margin-top: 6px; color: var(--muted); font-size: 10px; line-height: 1.5; }
+.modal-shell, .drawer-shell { position: fixed; inset: 0; z-index: 60; }
+.modal-backdrop, .drawer-backdrop, .mobile-backdrop { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: rgba(10,14,11,.42); backdrop-filter: blur(3px); }
+.modal-card { position: relative; z-index: 2; width: min(720px, calc(100% - 28px)); max-height: calc(100vh - 40px); overflow-y: auto; margin: 20px auto; border-radius: 20px; background: white; box-shadow: 0 28px 70px rgba(10,15,11,.22); }
+.modal-header { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; justify-content: space-between; padding: 20px 22px 14px; border-bottom: 1px solid #eef1ee; background: white; }
+.modal-header h2 { margin: 0; font-size: 18px; letter-spacing: -.5px; }
+.icon-button { width: 36px; height: 36px; border: 1px solid var(--border); border-radius: 10px; display: inline-grid; place-items: center; color: #4c534d; background: white; }
