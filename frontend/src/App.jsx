@@ -63,10 +63,16 @@ export default function App() {
       const [dashboardData, dealData] = await Promise.all([api.dashboard(), api.deals()])
       setDashboard(dashboardData); setDeals(dealData)
       if (stage.key === 'won') {
-        await api.updateStudent(deal.student_id, { status: 'active' })
+        const updated = await api.updateStudent(deal.student_id, { status: 'active' })
         setStudents(await api.students())
+        if (selectedStudent?.id === updated.id) setSelectedStudent(updated)
       }
     } catch (err) { setDeals(previous); setError(err.message) }
+  }
+
+  const handleStudentUpdated = async (updatedStudent) => {
+    setSelectedStudent(updatedStudent)
+    await load()
   }
 
   const title = NAV.find((item) => item.key === active)?.label || 'CRM'
@@ -88,7 +94,7 @@ export default function App() {
         </div>
       </main>
       <AddStudentModal open={addOpen} onClose={() => setAddOpen(false)} onCreated={() => load()} />
-      <StudentDrawer student={selectedStudent} deals={deals} onClose={() => setSelectedStudent(null)} onRefresh={load} />
+      <StudentDrawer student={selectedStudent} deals={deals} onClose={() => setSelectedStudent(null)} onRefresh={load} onStudentUpdated={handleStudentUpdated} />
     </div>
   )
 }
