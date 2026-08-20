@@ -7,8 +7,15 @@ import { NAV, Sidebar, Topbar } from './components/Shell'
 import { StudentDrawer } from './components/StudentDrawer'
 import { Students } from './components/Students'
 
+const DEFAULT_SECTION = 'dashboard'
+
+function sectionFromHash() {
+  const key = window.location.hash.replace(/^#\/?/, '')
+  return NAV.some((item) => item.key === key) ? key : DEFAULT_SECTION
+}
+
 export default function App() {
-  const [active, setActive] = useState('dashboard')
+  const [active, setActive] = useState(sectionFromHash)
   const [dashboard, setDashboard] = useState(null)
   const [students, setStudents] = useState([])
   const [deals, setDeals] = useState([])
@@ -28,6 +35,19 @@ export default function App() {
   }
 
   useEffect(() => { load() }, [])
+
+  useEffect(() => {
+    const syncSectionFromUrl = () => setActive(sectionFromHash())
+    window.addEventListener('hashchange', syncSectionFromUrl)
+    return () => window.removeEventListener('hashchange', syncSectionFromUrl)
+  }, [])
+
+  const navigate = (key) => {
+    if (!NAV.some((item) => item.key === key)) return
+    setActive(key)
+    const nextHash = `#${key}`
+    if (window.location.hash !== nextHash) window.location.hash = key
+  }
 
   const filteredStudents = useMemo(() => {
     const q = search.trim().toLowerCase()
@@ -53,7 +73,7 @@ export default function App() {
 
   return (
     <div className="app-shell">
-      <Sidebar active={active} onChange={setActive} mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
+      <Sidebar active={active} onChange={navigate} mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
       <main className="main-area">
         <Topbar title={title} search={search} onSearch={setSearch} onAdd={() => setAddOpen(true)} onMenu={() => setMobileOpen(true)} />
         <div className="content-area">
