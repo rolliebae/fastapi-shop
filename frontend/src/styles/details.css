@@ -46,9 +46,10 @@
 .profile-field input, .profile-field select, .profile-field textarea { width: 100%; border: 1px solid var(--border); border-radius: 10px; outline: 0; color: var(--text); background: #fff; font-size: 11px; }
 .profile-field input, .profile-field select { height: 38px; padding: 0 10px; }
 .profile-field textarea { min-height: 76px; padding: 9px 10px; line-height: 1.45; resize: vertical; }
+.profile-field input::placeholder, .profile-field textarea::placeholder { color: #adb4ae; font-style: italic; opacity: 1; }
 .profile-field input:focus, .profile-field select:focus, .profile-field textarea:focus { border-color: #9bc82f; box-shadow: 0 0 0 3px rgba(198,245,67,.18); }
 .profile-edit-error { padding: 9px 10px; border-radius: 9px; color: #8f3333; background: #fff1f1; font-size: 10px; }
-.profile-edit-actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; padding-top: 2px; }
+.profile-edit-actions { position: sticky; bottom: -12px; z-index: 5; display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin: 2px -12px -12px; padding: 11px 12px 12px; border-top: 1px solid #e7ebe7; border-radius: 0 0 13px 13px; background: rgba(251,252,251,.97); backdrop-filter: blur(10px); box-shadow: 0 -8px 18px rgba(18,25,19,.035); }
 .profile-edit-actions .secondary-button, .profile-edit-actions .primary-button { min-height: 38px; padding: 0 12px; font-size: 10px; }
 .deal-summary-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 9px; }
 .deal-summary-grid.compact { margin-bottom: 10px; }

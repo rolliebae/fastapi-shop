@@ -116,6 +116,12 @@ export function StudentDrawer({ student, deals, onClose, onRefresh, onStudentUpd
         notes: nullable(profileForm.notes),
         status: profileForm.status,
       })
+
+      if (deal) {
+        const product = `${updated.exam || 'ОГЭ'} ${updated.subject || 'Математика'}`
+        if (deal.product !== product) await api.updateDeal(deal.id, { product })
+      }
+
       setStatus(updated.status)
       setEditing(false)
       setProfileSaved(true)
@@ -193,17 +199,17 @@ export function StudentDrawer({ student, deals, onClose, onRefresh, onStudentUpd
               <div className="detail-title-row"><div className="detail-title">Данные ученика</div><span>Редактирование</span></div>
               <form className="profile-edit-form" onSubmit={saveProfile}>
                 <label className="profile-field full"><span>Имя и фамилия *</span><input value={profileForm.full_name} onChange={setProfile('full_name')} autoFocus /></label>
-                <label className="profile-field"><span>Класс</span><input type="number" min="1" max="11" value={profileForm.grade} onChange={setProfile('grade')} placeholder="9" /></label>
+                <label className="profile-field"><span>Класс</span><input type="number" min="1" max="11" value={profileForm.grade} onChange={setProfile('grade')} placeholder="Например, 9" /></label>
                 <label className="profile-field"><span>Статус</span><select value={profileForm.status} onChange={setProfile('status')}><option value="lead">Лид</option><option value="active">Активный</option><option value="paused">Пауза</option><option value="archived">Архив</option></select></label>
                 <label className="profile-field"><span>Экзамен</span><select value={profileForm.exam} onChange={setProfile('exam')}><option>ОГЭ</option><option>ЕГЭ</option><option>Школьная программа</option></select></label>
                 <label className="profile-field"><span>Предмет</span><select value={profileForm.subject} onChange={setProfile('subject')}><option>Математика</option><option>Информатика</option></select></label>
-                <label className="profile-field"><span>Telegram</span><input value={profileForm.telegram} onChange={setProfile('telegram')} placeholder="@username" /></label>
-                <label className="profile-field"><span>Телефон</span><input value={profileForm.phone} onChange={setProfile('phone')} placeholder="+7 999 000-00-00" /></label>
-                <label className="profile-field"><span>Имя родителя</span><input value={profileForm.parent_name} onChange={setProfile('parent_name')} placeholder="Елена" /></label>
-                <label className="profile-field"><span>Телефон родителя</span><input value={profileForm.parent_phone} onChange={setProfile('parent_phone')} placeholder="+7 999 000-00-00" /></label>
+                <label className="profile-field"><span>Telegram</span><input value={profileForm.telegram} onChange={setProfile('telegram')} placeholder="Например, @username" /></label>
+                <label className="profile-field"><span>Телефон</span><input value={profileForm.phone} onChange={setProfile('phone')} placeholder="Например, +7 999 000-00-00" /></label>
+                <label className="profile-field"><span>Имя родителя</span><input value={profileForm.parent_name} onChange={setProfile('parent_name')} placeholder="Например, Елена" /></label>
+                <label className="profile-field"><span>Телефон родителя</span><input value={profileForm.parent_phone} onChange={setProfile('parent_phone')} placeholder="Например, +7 999 000-00-00" /></label>
                 <label className="profile-field"><span>Источник</span><select value={profileForm.source} onChange={setProfile('source')}><option>Telegram</option><option>Рекомендация</option><option>Диагностика</option><option>VK</option><option>Другое</option></select></label>
-                <label className="profile-field"><span>Ответственный</span><input value={profileForm.owner} onChange={setProfile('owner')} placeholder="Егор" /></label>
-                <label className="profile-field full"><span>Заметка</span><textarea rows="4" value={profileForm.notes} onChange={setProfile('notes')} placeholder="Что важно знать об ученике" /></label>
+                <label className="profile-field"><span>Ответственный</span><input value={profileForm.owner} onChange={setProfile('owner')} placeholder="Например, Егор" /></label>
+                <label className="profile-field full"><span>Заметка</span><textarea rows="4" value={profileForm.notes} onChange={setProfile('notes')} placeholder="Например, цели, слабые темы и договорённости" /></label>
                 {profileError && <div className="profile-edit-error full">{profileError}</div>}
                 <div className="profile-edit-actions full"><button type="button" className="secondary-button" onClick={cancelEditing} disabled={profileSaving}>Отмена</button><button className="primary-button" disabled={profileSaving}><Save size={15} />{profileSaving ? 'Сохраняю…' : 'Сохранить ученика'}</button></div>
               </form>
